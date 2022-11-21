@@ -303,7 +303,7 @@ func SplitStream(ctx context.Context, rd ByteStream, dir string) error {
 		}
 
 		fileFactory := NewBufferedWriterFactory(dir, string(key[1:len(key)-1]), 256*1024)
-		wr := NewSplittingJsonlWriter(fileFactory.CreateWriter, 4*1024*1024*1024)
+		wr := NewSplittingJsonlWriter(fileFactory.CreateWriter, 3*1024*1024*1024)
 		_, val, err := ParseVal(itr, wr.Add, None)
 		if err != nil {
 			return err
