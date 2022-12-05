@@ -37,6 +37,32 @@ func AsyncReaderFromFile(filename string, bufferSize int) (*AsyncReader, error) 
 	return AsyncReaderFromReader(f, bufferSize)
 }
 
+// AsyncReaderFromGCStorage creates an AsyncReader for reading from a Google Cloud Storage object
+func AsyncReaderFromGCStorage(objectUri string, bufferSize int) (*AsyncReader, error) {
+
+	obj, gcCtx, err := GetGCStorageObject(objectUri)
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := obj.NewReader(gcCtx)
+	if err != nil {
+		return nil, err
+	}
+
+	// if gzipped, wrap in gzip reader
+	if strings.HasSuffix(objectUri, ".gz") {
+		gr, err := gzip.NewReader(r)
+		if err != nil {
+			return nil, err
+		}
+
+		return AsyncReaderFromReader(gr, bufferSize)
+	}
+
+	return AsyncReaderFromReader(r, bufferSize)
+}
+
 // AsyncReaderFromReader returns an AsyncReader for reading the supplied io.Reader
 func AsyncReaderFromReader(rd io.Reader, bufferSize int) (*AsyncReader, error) {
 	return &AsyncReader{

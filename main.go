@@ -20,6 +20,8 @@ func errExit(err error) {
 func main() {
 	var filename string
 	var outputPath string
+	var rd *AsyncReader
+	var err error
 
 	flag.StringVar(&filename, "file", "", "Source JSON file")
 	flag.StringVar(&outputPath, "output", "", "Output path for parsed JSON files (optional)")
@@ -31,21 +33,28 @@ func main() {
 		os.Exit(1)
 	}
 
-	if len(outputPath) == 0 {
+	if len(outputPath) > 0 {
+		if !IsGcStorageUri(outputPath) {
+			if _, err := os.Stat(outputPath); err == nil {
+				errExit(fmt.Errorf("error: %s already exists", filename))
+			} else if !os.IsNotExist(err) {
+				errExit(err)
+			}
+
+			err := os.Mkdir(outputPath, os.ModePerm)
+			errExit(err)
+		}
+	} else {
 		outputPath = strings.Replace(filename, ".", "_", -1)
 	}
 
-	if _, err := os.Stat(outputPath); err == nil {
-		errExit(fmt.Errorf("error: %s already exists", filename))
-	} else if !os.IsNotExist(err) {
+	if IsGcStorageUri(filename) {
+		rd, err = AsyncReaderFromGCStorage(filename, 1024*1024)
+		errExit(err)
+	} else {
+		rd, err = AsyncReaderFromFile(filename, 1024*1024)
 		errExit(err)
 	}
-
-	err := os.Mkdir(outputPath, os.ModePerm)
-	errExit(err)
-
-	rd, err := AsyncReaderFromFile(filename, 1024*1024)
-	errExit(err)
 
 	fmt.Printf("Reading %s\n", filename)
 	ctx := context.Background()
