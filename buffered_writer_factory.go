@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -56,7 +57,14 @@ type BufferedWriterFactory struct {
 // NewBufferedWriterFactory returns a *BufferedWriterFactory instance which creates files in the format [key]_%02d.jsonl
 // within the supplied directory.
 func NewBufferedWriterFactory(directory, key string, bufferSize int) *BufferedWriterFactory {
-	format := filepath.Join(directory, key+"_%02d.jsonl")
+	var format string
+
+	if IsGcStorageUri(directory) {
+		format = strings.TrimLeft(directory, "/") + "/" + key + "_%02d.jsonl"
+	} else {
+		format = filepath.Join(directory, key+"_%02d.jsonl")
+	}
+
 	return &BufferedWriterFactory{
 		format:     format,
 		index:      0,
@@ -69,10 +77,21 @@ func (bwf *BufferedWriterFactory) CreateWriter() (io.WriteCloser, error) {
 	filename := fmt.Sprintf(bwf.format, bwf.index)
 	bwf.index++
 
-	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
-	if err != nil {
-		return nil, err
+	if IsGcStorageUri(filename) {
+		obj, gcCtx, err := GetGCStorageObject(filename)
+		if err != nil {
+			return nil, err
+		}
+
+		f := obj.NewWriter(gcCtx)
+
+		return NewBufferedWriteCloser(filename, f, bwf.bufferSize), nil
+	} else {
+		f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
+		if err != nil {
+			return nil, err
+		}
+		return NewBufferedWriteCloser(filename, f, bwf.bufferSize), nil
 	}
 
-	return NewBufferedWriteCloser(filename, f, bwf.bufferSize), nil
 }

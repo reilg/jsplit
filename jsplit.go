@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -288,7 +289,7 @@ func SplitStream(ctx context.Context, rd ByteStream, dir string) error {
 	SkipWhitespace(itr)
 	ch := itr.Next()
 	if ch != '{' {
-		fmt.Errorf("Invalid format. Only json objects are supported")
+		return fmt.Errorf("Invalid format. Only json objects are supported")
 	}
 	itr.Skip()
 
@@ -303,7 +304,7 @@ func SplitStream(ctx context.Context, rd ByteStream, dir string) error {
 		}
 
 		fileFactory := NewBufferedWriterFactory(dir, string(key[1:len(key)-1]), 256*1024)
-		wr := NewSplittingJsonlWriter(fileFactory.CreateWriter, 4*1024*1024*1024)
+		wr := NewSplittingJsonlWriter(fileFactory.CreateWriter, 3*1024*1024*1024)
 		_, val, err := ParseVal(itr, wr.Add, None)
 		if err != nil {
 			return err
@@ -335,10 +336,31 @@ func SplitStream(ctx context.Context, rd ByteStream, dir string) error {
 	}
 
 	rootItems = append(rootItems, []byte("\n}")...)
-	rootFile := filepath.Join(dir, "root.json")
-	err := os.WriteFile(rootFile, rootItems, os.ModePerm)
-	if err != nil {
-		return err
+
+	var rootFile string
+
+	if IsGcStorageUri(dir) {
+		rootFile = strings.TrimSuffix(dir, "/") + "/root.json"
+		obj, gcCtx, err := GetGCStorageObject(rootFile)
+		if err != nil {
+			return err
+		}
+
+		wr := obj.NewWriter(gcCtx)
+		_, err = wr.Write(rootItems)
+		if err != nil {
+			return err
+		}
+		err = wr.Close()
+		if err != nil {
+			return err
+		}
+	} else {
+		rootFile = filepath.Join(dir, "root.json")
+		err := os.WriteFile(rootFile, rootItems, os.ModePerm)
+		if err != nil {
+			return err
+		}
 	}
 
 	fmt.Printf("%s written successfully\n", rootFile)
