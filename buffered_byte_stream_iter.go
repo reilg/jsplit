@@ -14,7 +14,6 @@ type ByteStream interface {
 type BufferedByteStreamIter struct {
 	stream ByteStream
 	ctx    context.Context
-
 	buffer []byte
 	pos    int
 }

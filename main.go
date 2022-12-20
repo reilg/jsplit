@@ -18,37 +18,39 @@ func errExit(err error) {
 }
 
 func main() {
-	var filename string
-	var outputPath string
-	var rd *AsyncReader
-	var err error
+	var (
+		filename   string
+		outputPath string
+		rd         *AsyncReader
+		err        error
+	)
 
 	flag.StringVar(&filename, "file", "", "Source JSON file")
 	flag.StringVar(&outputPath, "output", "", "Output path for parsed JSON files (optional)")
 	flag.Parse()
 
-	if len(filename) == 0 {
+	if filename == "" {
 		fmt.Println("Usage: jsplit -file <json_file> -output <output_path>")
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
 	if len(outputPath) > 0 {
-		if !IsGcStorageUri(outputPath) {
-			if _, err := os.Stat(outputPath); err == nil {
+		if !IsGcStorageURI(outputPath) {
+			if _, err = os.Stat(outputPath); err == nil {
 				errExit(fmt.Errorf("error: %s already exists", filename))
 			} else if !os.IsNotExist(err) {
 				errExit(err)
 			}
 
-			err := os.Mkdir(outputPath, os.ModePerm)
+			err = os.Mkdir(outputPath, os.ModePerm)
 			errExit(err)
 		}
 	} else {
-		outputPath = strings.Replace(filename, ".", "_", -1)
+		outputPath = strings.ReplaceAll(filename, ".", "_")
 	}
 
-	if IsGcStorageUri(filename) {
+	if IsGcStorageURI(filename) {
 		rd, err = AsyncReaderFromGCStorage(filename, 1024*1024)
 		errExit(err)
 	} else {
@@ -57,6 +59,7 @@ func main() {
 	}
 
 	fmt.Printf("Reading %s\n", filename)
+
 	ctx := context.Background()
 	ctx = rd.Start(ctx)
 

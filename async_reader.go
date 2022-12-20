@@ -11,11 +11,11 @@ import (
 
 // AsyncReader reads an io.Reader asynchronously
 type AsyncReader struct {
-	readCh     chan []byte
 	rd         io.Reader
+	readCh     chan []byte
 	bufferSize int
 	isClosed   int32
-}
+} // reordered to pack better
 
 // AsyncReaderFromFile creates an AsyncReader for reading the specified file
 func AsyncReaderFromFile(filename string, bufferSize int) (*AsyncReader, error) {
@@ -38,9 +38,8 @@ func AsyncReaderFromFile(filename string, bufferSize int) (*AsyncReader, error) 
 }
 
 // AsyncReaderFromGCStorage creates an AsyncReader for reading from a Google Cloud Storage object
-func AsyncReaderFromGCStorage(objectUri string, bufferSize int) (*AsyncReader, error) {
-
-	obj, gcCtx, err := GetGCStorageObject(objectUri)
+func AsyncReaderFromGCStorage(uri string, bufferSize int) (*AsyncReader, error) {
+	obj, gcCtx, err := GetGCStorageObject(uri)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +50,7 @@ func AsyncReaderFromGCStorage(objectUri string, bufferSize int) (*AsyncReader, e
 	}
 
 	// if gzipped, wrap in gzip reader
-	if strings.HasSuffix(objectUri, ".gz") {
+	if strings.HasSuffix(uri, ".gz") {
 		gr, err := gzip.NewReader(r)
 		if err != nil {
 			return nil, err
@@ -93,6 +92,7 @@ func (afr *AsyncReader) Start(ctx context.Context) context.Context {
 			if err == io.EOF {
 				close(afr.readCh)
 				atomic.StoreInt32(&afr.isClosed, 1)
+
 				return
 			}
 		}

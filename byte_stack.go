@@ -25,6 +25,7 @@ func (bs *ByteStack) Pop() byte {
 
 	ch := bs.chars[l-1]
 	bs.chars = bs.chars[:l-1]
+
 	return ch
 }
 

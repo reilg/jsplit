@@ -10,7 +10,7 @@ import (
 )
 
 func GetGCStorageObject(uri string) (*storage.ObjectHandle, context.Context, error) {
-	bucket, objectName, err := ParseGCStorageUri(uri)
+	bucket, objectName, err := ParseGCStorageURI(uri)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -28,7 +28,7 @@ func GetGCStorageObject(uri string) (*storage.ObjectHandle, context.Context, err
 }
 
 // Parse GC Storage Uri and return bucket and object name
-func ParseGCStorageUri(uri string) (bucket string, object string, err error) {
+func ParseGCStorageURI(uri string) (bucket, key string, err error) {
 	u, err := url.Parse(uri)
 	if err != nil {
 		return "", "", err
@@ -39,9 +39,8 @@ func ParseGCStorageUri(uri string) (bucket string, object string, err error) {
 	}
 
 	return u.Host, strings.TrimLeft(u.Path, "/"), nil
-
 }
 
-var IsGcStorageUri = func(uri string) bool {
+var IsGcStorageURI = func(uri string) bool {
 	return strings.HasPrefix(uri, "gs:")
 }

@@ -43,6 +43,7 @@ func NewErrContextWithCancel(parent context.Context) (context.Context, CancelWit
 		defer errCtx.mu.Unlock()
 
 		errCtx.err = err
+
 		cancelFunc()
 	}
 }

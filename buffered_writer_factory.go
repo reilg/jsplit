@@ -13,15 +13,16 @@ import (
 // BufferedWriteCloser wraps an io.WriteCloser in a bufio.Writer object and provides an io.WriteCloser implementation
 // for the bufio.Writer object
 type BufferedWriteCloser struct {
-	name  string
 	start time.Time
 	wr    io.WriteCloser
 	bufWr *bufio.Writer
+	name  string
 }
 
 // NewBufferedWriteCloser returns a BufferedWriteCloser object which writes to the supplied io.WriteCloser
 func NewBufferedWriteCloser(name string, wr io.WriteCloser, bufferSize int) *BufferedWriteCloser {
 	bufWr := bufio.NewWriterSize(wr, bufferSize)
+
 	return &BufferedWriteCloser{
 		name:  name,
 		start: time.Now(),
@@ -59,7 +60,7 @@ type BufferedWriterFactory struct {
 func NewBufferedWriterFactory(directory, key string, bufferSize int) *BufferedWriterFactory {
 	var format string
 
-	if IsGcStorageUri(directory) {
+	if IsGcStorageURI(directory) {
 		format = strings.TrimLeft(directory, "/") + "/" + key + "_%02d.jsonl"
 	} else {
 		format = filepath.Join(directory, key+"_%02d.jsonl")
@@ -77,7 +78,7 @@ func (bwf *BufferedWriterFactory) CreateWriter() (io.WriteCloser, error) {
 	filename := fmt.Sprintf(bwf.format, bwf.index)
 	bwf.index++
 
-	if IsGcStorageUri(filename) {
+	if IsGcStorageURI(filename) {
 		obj, gcCtx, err := GetGCStorageObject(filename)
 		if err != nil {
 			return nil, err
@@ -86,12 +87,12 @@ func (bwf *BufferedWriterFactory) CreateWriter() (io.WriteCloser, error) {
 		f := obj.NewWriter(gcCtx)
 
 		return NewBufferedWriteCloser(filename, f, bwf.bufferSize), nil
-	} else {
-		f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
-		if err != nil {
-			return nil, err
-		}
-		return NewBufferedWriteCloser(filename, f, bwf.bufferSize), nil
 	}
 
+	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, os.ModePerm)
+	if err != nil {
+		return nil, err
+	}
+
+	return NewBufferedWriteCloser(filename, f, bwf.bufferSize), nil
 }
