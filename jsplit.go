@@ -297,7 +297,7 @@ func ParseList(itr *BufferedByteStreamIter, addFn func(item []byte) error) error
 // SplitStream processes a json byte stream reading it and sending json lists in the root of the json document to jsonl
 // files sharded based on the size of the data written. Non-List root level objects are written to a file named root.json
 func SplitStream(ctx context.Context, rd ByteStream, dir string) error {
-	itr := NewBufferedStreamIter(rd, ctx)
+	itr := NewBufferedStreamIter(ctx, rd)
 
 	SkipWhitespace(itr)
 

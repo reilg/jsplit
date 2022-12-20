@@ -19,7 +19,7 @@ type BufferedByteStreamIter struct {
 }
 
 // NewBufferStreamIter returns a *BufferedByteStreamIter for iterating over the bytes of the given byte stream
-func NewBufferedStreamIter(stream ByteStream, readCtx context.Context) *BufferedByteStreamIter {
+func NewBufferedStreamIter(readCtx context.Context, stream ByteStream) *BufferedByteStreamIter {
 	return &BufferedByteStreamIter{
 		stream: stream,
 		buffer: nil,
