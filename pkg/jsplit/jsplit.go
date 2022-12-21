@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lillianhealth/jsplit/pkg/cloud"
+	"github.com/danielchalef/jsplit/pkg/cloud"
 )
 
 const (

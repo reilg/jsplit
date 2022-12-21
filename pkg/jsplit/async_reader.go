@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync/atomic"
 
-	"github.com/lillianhealth/jsplit/pkg/cloud"
+	"github.com/danielchalef/jsplit/pkg/cloud"
 )
 
 // AsyncReader reads an io.Reader asynchronously

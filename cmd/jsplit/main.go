@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/lillianhealth/jsplit/pkg/jsplit"
+	"github.com/danielchalef/jsplit/pkg/jsplit"
 
 	"flag"
 	"fmt"

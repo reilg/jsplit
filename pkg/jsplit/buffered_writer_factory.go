@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/lillianhealth/jsplit/pkg/cloud"
+	"github.com/danielchalef/jsplit/pkg/cloud"
 )
 
 // BufferedWriteCloser wraps an io.WriteCloser in a bufio.Writer object and provides an io.WriteCloser implementation

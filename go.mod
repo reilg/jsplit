@@ -1,4 +1,4 @@
-module github.com/lillianhealth/jsplit
+module github.com/danielchalef/jsplit
 
 go 1.19
 
