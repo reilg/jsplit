@@ -6,8 +6,6 @@ import (
 	"runtime"
 )
 
-type ListAddFunc func(item []byte) error
-
 func ErrExit(err error) {
 	if err != nil {
 		_, file, no, ok := runtime.Caller(1)

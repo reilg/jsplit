@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/lillianhealth/jsplit/pkg/cloud"
-	"github.com/lillianhealth/jsplit/pkg/jserror"
 )
 
 const (
@@ -204,6 +203,8 @@ func ParseObject(itr *BufferedByteStreamIter) ([]byte, error) {
 	}
 }
 
+type ListAddFunc func(item []byte) error
+
 type ParentType int
 
 const (
@@ -212,7 +213,7 @@ const (
 )
 
 // ParseVal parses a json value
-func ParseVal(itr *BufferedByteStreamIter, addFn jserror.ListAddFunc, parentType ParentType) (bool, []byte, error) {
+func ParseVal(itr *BufferedByteStreamIter, addFn ListAddFunc, parentType ParentType) (bool, []byte, error) {
 	SkipWhitespace(itr)
 
 	ch := itr.Next()
