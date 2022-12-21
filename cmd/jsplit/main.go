@@ -39,14 +39,15 @@ func main() {
 		fi, err = os.Stat(outputPath)
 
 		switch {
+		// if we ecountered an error and it's not a "file does not exist" error, exit
 		case err != nil && !os.IsNotExist(err):
 			jserror.ErrExit(err)
+		// if the file exists and it's a directory, exit unless overwrite is true
 		case err == nil && fi.IsDir() && !overwrite:
 			jserror.ErrExit(fmt.Errorf("error: %s already exists", outputPath))
+		// if the file exists and it's a directory, remove it if overwrite is true
 		case err == nil && fi.IsDir() && overwrite:
 			err = os.RemoveAll(outputPath)
-			jserror.ErrExit(err)
-		case !os.IsNotExist(err):
 			jserror.ErrExit(err)
 		}
 
