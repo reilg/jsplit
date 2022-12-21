@@ -30,10 +30,12 @@ this repository.  Once you have cloned the repository cd into the cloned jsplit 
 
 # Usage
 
-`jsplit -file <input_file> [-output <output_path>]`
+`jsplit -file <input_file> -output <output_path>`
 
   * file - (Required) Name of the json or or gz encoded json file being split into jsonl files
-  * output - (Optional) Output directory. If not provided, a directory will be created based on the name of the input file.  For example, if the file myfile.json is being split and an output direce a directory named myfile\_json would be created and output would be written there.
+  * output - (Required) Output directory. 
+
+Input and output can be either local filesystem paths or AWS S3 or Google Cloud Storage URIs. 
 
 # Example
 
@@ -56,7 +58,7 @@ this repository.  Once you have cloned the repository cd into the cloned jsplit 
 
 #### Example Usage
 
-`jsplit -file example.json`
+`jsplit -file example.json` -output s3://mybucket/example_json/
 
 ### Example Output files
 
