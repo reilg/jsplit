@@ -1,3 +1,17 @@
+# Fork of dolthub/jsplit
+Reworked somewhat for use in data pipelines.
+- Input and Output paths can be URIs to AWS S3 or Google Cloud Storage objects thanks to the [Google CDK](https://gocloud.dev/howto/blob/).
+- A `Split` function that wraps what was previously in `main()`, more readily allowing `split` to be used as a module in other apps.
+- Dockerfile to generate a lightweight container
+- Makefile with build, test, container build, and container deploy targets.
+
+## TODO:
+- Investigate heavy GC activity and mitigation. 
+- When calling `Split`, potentially throwing `SplitStream` into a goroutine and returning `ctx`, allowing the calling code to cancel if necessary.
+
+## Performance
+`jsplit` currently makes heavy usage of the GC. If you notice low core utilization, trading off memory usage against the GC can be done by setting a `GOGC` value far higher than the default of 200. 
+  
 # JSplit
 
 JSplit is a program that can take large JSON files and split them up into a root.json files and several
