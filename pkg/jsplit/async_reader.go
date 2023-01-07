@@ -4,9 +4,11 @@ import (
 	"compress/gzip"
 	"context"
 	"io"
+	"net/http"
 	"os"
 	"strings"
 	"sync/atomic"
+	"time"
 
 	"github.com/danielchalef/jsplit/pkg/cloud"
 )
@@ -21,15 +23,23 @@ type AsyncReader struct {
 
 // AsyncReaderFromFile creates an AsyncReader for reading from a Google Cloud Storage object
 func AsyncReaderFromFile(uri string, bufferSize int) (*AsyncReader, error) {
-	var r io.Reader
-	var err error
+	var (
+		r   io.Reader
+		err error
+	)
 
-	if cloud.IsCloudURI(uri) {
+	switch {
+	case cloud.IsCloudURI(uri):
 		r, err = cloud.NewReader(context.TODO(), uri)
 		if err != nil {
 			return nil, err
 		}
-	} else {
+	case strings.HasPrefix(uri, "http"):
+		r, err = HTTPReader(uri)
+		if err != nil {
+			return nil, err
+		}
+	default:
 		r, err = os.Open(uri)
 		if err != nil {
 			return nil, err
@@ -106,4 +116,25 @@ func (afr *AsyncReader) Read(ctx context.Context) ([]byte, error) {
 // IsClosed is used for testing to verify that the reader and associated channel has been closed.
 func (afr *AsyncReader) IsClosed() bool {
 	return atomic.LoadInt32(&afr.isClosed) == 1
+}
+
+func HTTPReader(uri string) (io.Reader, error) {
+	const HTTPTimeOut = 10 * time.Minute
+
+	var (
+		err error
+		r   *http.Response
+	)
+
+	var httpClient = &http.Client{
+		Timeout: HTTPTimeOut,
+	}
+
+	r, err = httpClient.Get(uri)
+	if err != nil {
+		return nil, err
+	}
+
+	return r.Body, nil
+
 }
