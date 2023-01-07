@@ -29,13 +29,13 @@ func AsyncReaderFromFile(uri string, bufferSize int) (*AsyncReader, error) {
 	)
 
 	switch {
-	case cloud.IsCloudURI(uri):
-		r, err = cloud.NewReader(context.TODO(), uri)
+	case strings.HasPrefix(uri, "http"):
+		r, err = HTTPReader(uri)
 		if err != nil {
 			return nil, err
 		}
-	case strings.HasPrefix(uri, "http"):
-		r, err = HTTPReader(uri)
+	case cloud.IsCloudURI(uri):
+		r, err = cloud.NewReader(context.TODO(), uri)
 		if err != nil {
 			return nil, err
 		}
