@@ -3,7 +3,11 @@ package jsplit
 import (
 	"context"
 	"io"
+
+	pool "github.com/libp2p/go-buffer-pool"
 )
+
+var p pool.BufferPool
 
 // ByteStream is an interface for reading bytes
 type ByteStream interface {
@@ -84,10 +88,14 @@ func (itr *BufferedByteStreamIter) readMore() error {
 	} else {
 		oldLen := len(itr.buffer)
 		newBufferLen := oldLen + len(buf)
-		newBuf := make([]byte, newBufferLen)
+
+		newBuf := p.Get(newBufferLen)
+
 		copy(newBuf, itr.buffer)
 		copy(newBuf[oldLen:], buf)
 		itr.buffer = newBuf
+
+		p.Put(newBuf)
 	}
 
 	return nil
