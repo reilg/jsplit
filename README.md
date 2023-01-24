@@ -1,12 +1,13 @@
 # Fork of dolthub/jsplit
 Reworked somewhat for use in data pipelines.
+- ~2x faster than upstream version due to use of pooled byte slice buffers in `BufferedByteStreamIter.readMore()`
 - Input and Output paths can be URIs to AWS S3 or Google Cloud Storage objects thanks to the [Google CDK](https://gocloud.dev/howto/blob/).
 - A `Split` function that wraps what was previously in `main()`, more readily allowing `split` to be used as a module in other apps.
 - Dockerfile to generate a lightweight container
 - Makefile with build, test, container build, and container deploy targets.
 
 ## TODO:
-- Investigate heavy GC activity and mitigation. 
+- ~~Investigate heavy GC activity and mitigation.~~
 - When calling `Split`, potentially throwing `SplitStream` into a goroutine and returning `ctx`, allowing the calling code to cancel if necessary.
 
 ## Performance
