@@ -3,6 +3,7 @@ module github.com/lillianhealth/jsplit
 go 1.19
 
 require (
+	github.com/libp2p/go-buffer-pool v0.1.0
 	github.com/stretchr/testify v1.8.1
 	gocloud.dev v0.27.0
 )
