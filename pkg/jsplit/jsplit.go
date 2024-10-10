@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/danielchalef/jsplit/pkg/cloud"
+	"github.com/reilg/jsplit/pkg/cloud"
 )
 
 const (
@@ -27,8 +27,10 @@ const (
 	COMMA   = byte(',')
 )
 
-var isOpen []bool
-var isWhitespace []bool
+var (
+	isOpen       []bool
+	isWhitespace []bool
+)
 
 func init() {
 	isWhitespace = make([]bool, 256)

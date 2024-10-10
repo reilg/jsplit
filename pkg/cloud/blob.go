@@ -6,9 +6,10 @@ import (
 	"strings"
 
 	"gocloud.dev/blob"
-	_ "gocloud.dev/blob/fileblob" // required by CDK as blob driver
-	_ "gocloud.dev/blob/gcsblob"  // required by CDK as blob driver
-	_ "gocloud.dev/blob/s3blob"   // required by CDK as blob driver
+	_ "gocloud.dev/blob/azureblob" // required by CDK as blob driver
+	_ "gocloud.dev/blob/fileblob"  // required by CDK as blob driver
+	_ "gocloud.dev/blob/gcsblob"   // required by CDK as blob driver
+	_ "gocloud.dev/blob/s3blob"    // required by CDK as blob driver
 )
 
 func OpenBucket(ctx context.Context, uri string) (*blob.Bucket, error) {
@@ -28,16 +29,15 @@ func OpenBucket(ctx context.Context, uri string) (*blob.Bucket, error) {
 func NewWriter(ctx context.Context, uri string) (*blob.Writer, error) {
 	var (
 		err error
-		bkt string
 		k   string
 	)
 
-	_, bkt, k, err = ParseBlobURI(uri)
+	_, _, k, err = ParseBlobURI(uri)
 	if err != nil {
 		return nil, err
 	}
 
-	b, err := OpenBucket(ctx, bkt)
+	b, err := OpenBucket(ctx, uri)
 	if err != nil {
 		return nil, err
 	}
@@ -53,16 +53,15 @@ func NewWriter(ctx context.Context, uri string) (*blob.Writer, error) {
 func NewReader(ctx context.Context, uri string) (*blob.Reader, error) {
 	var (
 		err error
-		bkt string
 		k   string
 	)
 
-	_, bkt, k, err = ParseBlobURI(uri)
+	_, _, k, err = ParseBlobURI(uri)
 	if err != nil {
 		return nil, err
 	}
 
-	b, err := OpenBucket(ctx, bkt)
+	b, err := OpenBucket(ctx, uri)
 	if err != nil {
 		return nil, err
 	}

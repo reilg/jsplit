@@ -1,4 +1,4 @@
-module github.com/danielchalef/jsplit
+module github.com/reilg/jsplit
 
 go 1.19
 
@@ -14,6 +14,13 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	cloud.google.com/go/iam v0.6.0 // indirect
 	cloud.google.com/go/storage v1.27.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.1.1 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.0.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/internal v1.0.0 // indirect
+	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v0.4.1 // indirect
+	github.com/Azure/go-autorest v14.2.0+incompatible // indirect
+	github.com/Azure/go-autorest/autorest/to v0.4.0 // indirect
+	github.com/AzureAD/microsoft-authentication-library-for-go v0.4.0 // indirect
 	github.com/aws/aws-sdk-go v1.44.68 // indirect
 	github.com/aws/aws-sdk-go-v2 v1.16.8 // indirect
 	github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream v1.4.3 // indirect
@@ -34,6 +41,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.10 // indirect
 	github.com/aws/smithy-go v1.12.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/golang-jwt/jwt v3.2.1+incompatible // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
@@ -42,8 +50,11 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.2.0 // indirect
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/kylelemons/godebug v1.1.0 // indirect
+	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
+	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b // indirect
 	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783 // indirect
 	golang.org/x/sys v0.0.0-20220731174439-a90be440212d // indirect

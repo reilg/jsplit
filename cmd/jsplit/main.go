@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/danielchalef/jsplit/pkg/jsplit"
-
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/reilg/jsplit/pkg/jsplit"
 )
 
 func main() {

@@ -10,7 +10,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/danielchalef/jsplit/pkg/cloud"
+	"github.com/reilg/jsplit/pkg/cloud"
 )
 
 // AsyncReader reads an io.Reader asynchronously
@@ -126,7 +126,7 @@ func HTTPReader(uri string) (io.Reader, error) {
 		r   *http.Response
 	)
 
-	var httpClient = &http.Client{
+	httpClient := &http.Client{
 		Timeout: HTTPTimeOut,
 	}
 
@@ -136,5 +136,4 @@ func HTTPReader(uri string) (io.Reader, error) {
 	}
 
 	return r.Body, nil
-
 }
